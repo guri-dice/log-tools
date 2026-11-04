@@ -32,21 +32,12 @@ button{font:inherit;cursor:pointer}
 .stars:before{content:"";background-image:radial-gradient(#fff 1px,transparent 1px);background-size:97px 97px;background-position:28px 22px;opacity:.8}
 .stars:after{content:"";background:linear-gradient(rgba(255,255,255,.03) 50%,rgba(0,0,0,.05) 50%);background-size:100% 4px;opacity:.48}
 
-.icons{position:absolute;z-index:1;left:10px;top:10px;display:grid;gap:6px;width:94px}
-.icon{display:grid;justify-items:center;gap:6px;padding:7px 2px;color:#fff;font-size:12px;line-height:1.3;text-align:center;text-shadow:1px 1px #000}
-.icon:hover,.icon:focus-visible{background:rgba(38,61,152,.75);outline:1px dotted #fff;outline-offset:-1px}
-.icon-img{position:relative;display:block;width:38px;height:29px;background:#101b35;border:2px solid #bfc9e0;box-shadow:inset 0 0 0 3px #1f397a}
-.icon-img:before{content:"";position:absolute;left:12px;top:7px;width:10px;height:10px;border-radius:50%;background:#6cff74;border:1px solid #062b0c}
-.icon-img.red:before{background:#ff5c78;border-color:#4d0614}
 
 .window{position:relative;z-index:2;width:min(1100px,100%);height:100%;margin:0 auto;display:flex;flex-direction:column;min-height:0;background:var(--win);border:2px solid;border-color:#fff #333 #333 #fff;box-shadow:2px 2px 0 #000}
-.window.maxed{width:100%}
 .titlebar{height:24px;flex:0 0 24px;display:flex;align-items:center;justify-content:space-between;padding:2px 4px 2px 7px;background:var(--blue);color:#fff;font:700 12px/1 var(--pixel);text-shadow:1px 1px #000;user-select:none}
 .titlebar-name{display:flex;align-items:center;gap:6px;min-width:0}
 .led{display:inline-block;flex:0 0 auto;width:10px;height:10px;border-radius:50%;background:#6cff74;border:1px solid #064c22;box-shadow:0 0 3px #62f3d5}
-.controls{display:flex;gap:3px}
-.win-btn{width:22px;height:18px;padding:0;background:var(--win);border:2px solid;border-color:#fff #333 #333 #fff;color:#000;font:700 12px/12px var(--pixel)}
-.win-btn:active,.start:active,.task:active{border-color:#333 #fff #fff #333}
+.start:active{border-color:#333 #fff #fff #333}
 .addressbar{flex:0 0 30px;display:grid;grid-template-columns:auto minmax(0,1fr);gap:7px;align-items:center;padding:4px 7px;border-top:1px solid #fff;border-bottom:2px solid #777;background:#d7d7d7;font:12px/1 var(--pixel)}
 .address{height:20px;display:flex;align-items:center;overflow:hidden;white-space:nowrap;background:#fff;border:2px solid;border-color:#777 #fff #fff #777;padding:1px 8px;color:#111}
 
@@ -86,16 +77,15 @@ button{font:inherit;cursor:pointer}
 .start,.task,.tray{height:27px;background:var(--win);border:2px solid;border-color:#fff #333 #333 #fff;color:#111}
 .start{display:flex;align-items:center;gap:5px;padding:2px 9px;font-weight:700}
 .start[aria-expanded="true"]{border-color:#333 #fff #fff #333;background:#d6d6d6}
-.task{min-width:150px;text-align:left;padding:2px 10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.task{min-width:150px;display:flex;align-items:center;padding:2px 10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .task.active{border-color:#333 #fff #fff #333;background:#d6d6d6}
 .space{flex:1}
 .tray{display:flex;align-items:center;gap:8px;min-width:84px;justify-content:center;border-color:#777 #fff #fff #777;background:#d9d9d9}
 .menu{position:absolute;left:0;bottom:calc(34px + env(safe-area-inset-bottom,0px));z-index:10;display:grid;grid-template-columns:32px 1fr;width:236px;background:var(--win);border:2px solid;border-color:#fff #333 #333 #fff;box-shadow:2px 2px 0 #000}
 .menu-side{writing-mode:vertical-rl;transform:rotate(180deg);background:var(--blue);color:#fff;padding:8px 6px;font:700 12px/1 var(--pixel);letter-spacing:.08em;text-shadow:1px 1px #000}
-.menu-list{padding:8px;background:#d0d0d0}
-.menu-list a{display:flex;align-items:center;gap:8px;height:32px;padding:4px 8px;color:#111;font:12px/1 var(--pixel)}
+.menu-list{display:flex;align-items:center;padding:8px;background:#d0d0d0}
+.menu-list a{flex:1;display:flex;align-items:center;gap:8px;height:32px;padding:4px 8px;color:#111;font:12px/1 var(--pixel)}
 .menu-list a:hover,.menu-list a:focus-visible{background:var(--blue);color:#fff}
-.menu-sep{margin:5px 2px;border-top:1px solid #808080;border-bottom:1px solid #fff}
 
 @media (max-width:760px){
   html,body{overflow:auto;height:auto}
@@ -122,11 +112,6 @@ button{font:inherit;cursor:pointer}
   <main class="window" id="win">
     <header class="titlebar">
       <div class="titlebar-name"><span class="led" aria-hidden="true"></span><span>AlienOS Folders</span></div>
-      <div class="controls">
-        <button class="win-btn" id="btnMin" type="button" aria-label="최소화">_</button>
-        <button class="win-btn" id="btnMax" type="button" aria-label="창 크기 전환">□</button>
-        <button class="win-btn" id="btnClose" type="button" aria-label="닫기">×</button>
-      </div>
     </header>
     <div class="addressbar"><span>Address</span><div class="address">alien://guri-dice/로그 변환기</div></div>
 
@@ -145,7 +130,7 @@ button{font:inherit;cursor:pointer}
               <div class="poster" aria-hidden="true"><span class="monitor"></span></div>
               <div class="info">
                 <h2>CoC 로그 변환기</h2>
-                <p>CoC 세션 로그를 변환합니다. 화자별 색과 주사위 결과 표시를 정리할 수 있습니다.</p>
+                <p>CoC 세션 로그를 변환합니다.<br>화자별 색과 주사위 결과 표시를 정리할 수 있습니다.</p>
                 <div class="foot"><span>코코포리아 / Roll20</span><span class="open">열기</span></div>
               </div>
             </a>
@@ -153,36 +138,28 @@ button{font:inherit;cursor:pointer}
               <div class="poster red" aria-hidden="true"><span class="monitor"></span></div>
               <div class="info">
                 <h2>인세인 로그 변환기</h2>
-                <p>인세인 세션 전용입니다. 인세인 판정 표시와 비밀 접기, 장면 종료 표시를 지원합니다.</p>
+                <p>인세인 세션 전용입니다.<br>인세인 판정 표시와 비밀 접기, 장면 종료 표시를 지원합니다.</p>
                 <div class="foot"><span>코코포리아 / Roll20</span><span class="open">열기</span></div>
               </div>
             </a>
           </div>
 
-          <p class="note">코코포리아, Roll20 로그를 블로그에 올리기 좋게 변환합니다. 로그 파일은 서버로 전송되지 않고 브라우저 안에서 처리됩니다. 작업 내용은 사용 중인 브라우저에 자동 저장됩니다. PC 사용을 권장합니다.</p>
+          <p class="note">코코포리아, Roll20 로그를 블로그에 올리기 좋게 변환합니다.<br>로그 파일은 서버로 전송되지 않고 브라우저 안에서 처리됩니다.<br>작업 내용은 사용 중인 브라우저에 자동 저장됩니다.<br>PC 사용을 권장합니다.</p>
         </div>
       </div>
     </div>
   </main>
 
-  <nav class="icons" id="icons" aria-label="바탕화면" hidden>
-    <a class="icon" href="./CoC.html"><span class="icon-img" aria-hidden="true"></span>CoC 변환기</a>
-    <a class="icon" href="./insane.html"><span class="icon-img red" aria-hidden="true"></span>인세인 변환기</a>
-  </nav>
-
   <div class="menu" id="menu" hidden>
     <div class="menu-side">AlienOS 95</div>
     <div class="menu-list">
-      <a href="./CoC.html"><span class="mini-folder" aria-hidden="true"></span>CoC 로그 변환기</a>
-      <a href="./insane.html"><span class="mini-folder" aria-hidden="true"></span>인세인 로그 변환기</a>
-      <div class="menu-sep"></div>
       <a href="https://github.com/guri-dice/log-tools"><span class="mini-folder" aria-hidden="true"></span>GitHub 저장소</a>
     </div>
   </div>
 
   <footer class="taskbar">
     <button class="start" id="btnStart" type="button" aria-expanded="false" aria-controls="menu"><span class="led" aria-hidden="true"></span>Start</button>
-    <button class="task active" id="btnTask" type="button">AlienOS Folders</button>
+    <div class="task active">AlienOS Folders</div>
     <div class="space"></div>
     <div class="tray"><span class="led" aria-hidden="true"></span><span id="clock">00:00</span></div>
   </footer>
@@ -191,13 +168,8 @@ button{font:inherit;cursor:pointer}
 <script>
 (function(){
   var $=function(id){return document.getElementById(id)};
-  var win=$('win'),icons=$('icons'),menu=$('menu'),start=$('btnStart'),task=$('btnTask');
-  function show(open){win.hidden=!open;icons.hidden=open;task.classList.toggle('active',open)}
+  var menu=$('menu'),start=$('btnStart');
   function toggleMenu(open){menu.hidden=!open;start.setAttribute('aria-expanded',String(open))}
-  $('btnMin').addEventListener('click',function(){show(false)});
-  $('btnClose').addEventListener('click',function(){show(false)});
-  $('btnMax').addEventListener('click',function(){win.classList.toggle('maxed')});
-  task.addEventListener('click',function(){show(win.hidden)});
   start.addEventListener('click',function(e){e.stopPropagation();toggleMenu(menu.hidden)});
   document.addEventListener('click',function(e){if(!menu.contains(e.target))toggleMenu(false)});
   document.addEventListener('keydown',function(e){if(e.key==='Escape')toggleMenu(false)});
