@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>TRPG 로그 변환기</title>
+<meta name="description" content="코코포리아, Roll20 로그를 블로그에 올리기 좋게 바꿔 주는 변환기">
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/galmuri@2.40.3/dist/galmuri.css">
+<style>
+@font-face{font-family:'Ridibatang';src:url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_twelve@1.0/RIDIBatang.woff') format('woff');font-weight:normal;font-display:swap;}
+:root{
+  color-scheme:light;
+  --space:#030812;--space2:#081323;--win:#c0c0c0;--panel:#efefef;--paper:#f6f3ea;--ink:#2b2b30;--shade:#7f7f7f;
+  --blue:#263d98;--soft-blue:#eef2ff;--line:#b7c2e2;--folder:#d8c66b;--folder-border:#766a2e;
+  --pixel:'Galmuri11','Galmuri9','Apple SD Gothic Neo','Malgun Gothic',sans-serif;
+  --pixel-l:'Galmuri14','Galmuri11','Apple SD Gothic Neo','Malgun Gothic',sans-serif;
+  --body:'Ridibatang','Noto Serif KR','AppleMyungjo','Batang',serif;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{width:100%;height:100%;margin:0;background:var(--space);overflow:hidden;color:var(--ink)}
+body{font:13px/1.55 var(--pixel)}
+a{color:inherit;text-decoration:none}
+button{font:inherit;cursor:pointer}
+::selection{background:#cbd6ff;color:#000}
+:focus-visible{outline:2px dotted #000;outline-offset:-4px}
+
+.desktop{position:relative;width:100vw;height:100dvh;overflow:hidden;padding:8px 8px 42px;background:radial-gradient(circle at 75% 7%,rgba(90,120,210,.26),transparent 25%),linear-gradient(180deg,var(--space2),#010309 82%)}
+.stars,.stars:before,.stars:after{position:absolute;inset:0;pointer-events:none}
+.stars{background-image:radial-gradient(#d8ffff 1px,transparent 1px);background-size:58px 58px;background-position:8px 14px;opacity:.95}
+.stars:before{content:"";background-image:radial-gradient(#fff 1px,transparent 1px);background-size:97px 97px;background-position:28px 22px;opacity:.8}
+.stars:after{content:"";background:linear-gradient(rgba(255,255,255,.03) 50%,rgba(0,0,0,.05) 50%);background-size:100% 4px;opacity:.48}
+
+.icons{position:absolute;z-index:1;left:10px;top:10px;display:grid;gap:6px;width:94px}
+.icon{display:grid;justify-items:center;gap:6px;padding:7px 2px;color:#fff;font-size:12px;line-height:1.3;text-align:center;text-shadow:1px 1px #000}
+.icon:hover,.icon:focus-visible{background:rgba(38,61,152,.75);outline:1px dotted #fff;outline-offset:-1px}
+.icon-img{position:relative;display:block;width:38px;height:29px;background:#101b35;border:2px solid #bfc9e0;box-shadow:inset 0 0 0 3px #1f397a}
+.icon-img:before{content:"";position:absolute;left:12px;top:7px;width:10px;height:10px;border-radius:50%;background:#6cff74;border:1px solid #062b0c}
+.icon-img.red:before{background:#ff5c78;border-color:#4d0614}
+
+.window{position:relative;z-index:2;width:min(1100px,100%);height:100%;margin:0 auto;display:flex;flex-direction:column;min-height:0;background:var(--win);border:2px solid;border-color:#fff #333 #333 #fff;box-shadow:2px 2px 0 #000}
+.window.maxed{width:100%}
+.titlebar{height:24px;flex:0 0 24px;display:flex;align-items:center;justify-content:space-between;padding:2px 4px 2px 7px;background:var(--blue);color:#fff;font:700 12px/1 var(--pixel);text-shadow:1px 1px #000;user-select:none}
+.titlebar-name{display:flex;align-items:center;gap:6px;min-width:0}
+.led{display:inline-block;flex:0 0 auto;width:10px;height:10px;border-radius:50%;background:#6cff74;border:1px solid #064c22;box-shadow:0 0 3px #62f3d5}
+.controls{display:flex;gap:3px}
+.win-btn{width:22px;height:18px;padding:0;background:var(--win);border:2px solid;border-color:#fff #333 #333 #fff;color:#000;font:700 12px/12px var(--pixel)}
+.win-btn:active,.start:active,.task:active{border-color:#333 #fff #fff #333}
+.addressbar{flex:0 0 30px;display:grid;grid-template-columns:auto minmax(0,1fr);gap:7px;align-items:center;padding:4px 7px;border-top:1px solid #fff;border-bottom:2px solid #777;background:#d7d7d7;font:12px/1 var(--pixel)}
+.address{height:20px;display:flex;align-items:center;overflow:hidden;white-space:nowrap;background:#fff;border:2px solid;border-color:#777 #fff #fff #777;padding:1px 8px;color:#111}
+
+.shell{flex:1;min-height:0;display:grid;grid-template-columns:260px minmax(0,1fr);gap:7px;padding:7px}
+.sidebar{min-width:0;min-height:0;overflow:auto;background:#b9b9b9;border:2px solid;border-color:var(--shade) #fff #fff var(--shade);padding:8px}
+.pane{min-width:0;min-height:0;display:flex;flex-direction:column;background:var(--paper);border:2px solid;border-color:var(--shade) #fff #fff var(--shade)}
+.side-card{background:var(--panel);border:2px solid;border-color:#fff var(--shade) var(--shade) #fff;padding:8px 9px;margin-bottom:9px}
+.side-card:last-child{margin-bottom:0}
+.side-card h2{font:700 13px/1.2 var(--pixel);margin:0 0 8px;padding-bottom:4px;border-bottom:1px dotted #777}
+.side-card p{margin:0;font:13px/1.6 var(--body);word-break:keep-all}
+.tree{list-style:none;margin:0;padding:0}
+.tree li{margin:4px 0}
+.tree a{display:inline-flex;align-items:center;gap:6px;min-height:22px;padding:0 3px;color:#111}
+.tree a:hover,.tree a:focus-visible{background:var(--blue);color:#fff}
+.mini-folder{position:relative;display:inline-block;flex:0 0 auto;width:15px;height:12px;background:var(--folder);border:1px solid var(--folder-border);box-shadow:inset 0 3px 0 rgba(255,255,255,.45)}
+dl{display:grid;grid-template-columns:64px 1fr;gap:3px 8px;margin:0}
+dt,dd{margin:0}
+.green{color:#00745f;font-weight:800}
+
+.location{flex:0 0 23px;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:2px 8px;background:#e7e7e7;border-bottom:1px solid #aaa;font:12px/1 var(--pixel);white-space:nowrap;overflow:hidden}
+.location b{color:#00745f}
+.scroll{flex:1;min-height:0;overflow:auto;padding:12px 14px 14px}
+.folder-head{display:flex;align-items:center;gap:12px;min-height:58px;margin-bottom:12px;padding:9px 14px;background:var(--soft-blue);border:1px solid var(--line)}
+.folder-head h1{margin:0;font:400 24px/1.2 var(--pixel)}
+.folder-head p{margin:3px 0 0;color:#555;font:12px/1.4 var(--body)}
+.big-folder{position:relative;flex:0 0 auto;width:34px;height:27px;margin-top:6px;background:var(--folder);border:2px solid var(--folder-border)}
+.big-folder:before{content:"";position:absolute;left:3px;top:-8px;width:16px;height:8px;background:#eadc8a;border:2px solid var(--folder-border);border-bottom:0}
+
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+.card{display:grid;grid-template-rows:150px auto;min-width:0;background:#f2f2f2;border:2px solid;border-color:#fff #777 #777 #fff;box-shadow:1px 1px 0 #777;overflow:hidden;color:#111}
+.card:hover,.card:focus-visible{transform:translate(-1px,-1px);box-shadow:2px 2px 0 #777;background:#fff}
+.poster{position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;background:linear-gradient(135deg,#061021,#142c77 45%,#070b18);border-bottom:1px solid #999}
+.poster.red{background:linear-gradient(135deg,#17060d,#6d1f3a 45%,#12060b)}
+.poster:after{content:"";position:absolute;inset:0;background:linear-gradient(rgba(255,255,255,.03) 50%,rgba(0,0,0,.045) 50%);background-size:100% 4px;pointer-events:none}
+.monitor{position:relative;width:64px;height:46px;background:#101b35;border:2px solid #bfc9e0;box-shadow:inset 0 0 0 3px #1f397a,2px 2px 0 #000}
+.monitor:before{content:"";position:absolute;left:24px;top:14px;width:13px;height:13px;border-radius:50%;background:#6cff74;border:1px solid #062b0c}
+.monitor:after{content:"";position:absolute;left:22px;bottom:-10px;width:17px;height:8px;background:#aaa;border:1px solid #555}
+.red .monitor{background:#250c15;box-shadow:inset 0 0 0 3px #6d1f3a,2px 2px 0 #000}
+.red .monitor:before{background:#ff5c78;border-color:#4d0614}
+.info{display:flex;flex-direction:column;padding:12px 14px 10px;min-width:0}
+.info h2{margin:0 0 6px;font:400 17px/1.4 var(--pixel-l);color:#222;word-break:keep-all}
+.info p{margin:0 0 12px;font:14px/1.65 var(--body);color:#3a3a40;word-break:keep-all}
+.foot{margin-top:auto;padding-top:9px;border-top:1px dotted #aaa;display:flex;align-items:center;justify-content:space-between;gap:8px;color:#666;font-size:12px}
+.open{flex:0 0 auto;padding:3px 9px;background:var(--win);border:2px solid;border-color:#fff #333 #333 #fff;color:#111}
+.card:hover .open,.card:focus-visible .open{background:var(--blue);color:#fff}
+.note{margin:14px 0 0;padding:9px 12px;background:#efefef;border:1px solid #cfcfcf;font:13px/1.6 var(--body);color:#444;word-break:keep-all}
+
+.taskbar{position:absolute;left:0;right:0;bottom:0;z-index:9;height:calc(34px + env(safe-area-inset-bottom,0px));display:flex;align-items:center;gap:4px;padding:3px 4px calc(3px + env(safe-area-inset-bottom,0px));background:var(--win);border-top:2px solid #fff;font:12px/1 var(--pixel)}
+.start,.task,.tray{height:27px;background:var(--win);border:2px solid;border-color:#fff #333 #333 #fff;color:#111}
+.start{display:flex;align-items:center;gap:5px;padding:2px 9px;font-weight:700}
+.start[aria-expanded="true"]{border-color:#333 #fff #fff #333;background:#d6d6d6}
+.task{min-width:150px;text-align:left;padding:2px 10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.task.active{border-color:#333 #fff #fff #333;background:#d6d6d6}
+.space{flex:1}
+.tray{display:flex;align-items:center;gap:8px;min-width:84px;justify-content:center;border-color:#777 #fff #fff #777;background:#d9d9d9}
+.menu{position:absolute;left:0;bottom:calc(34px + env(safe-area-inset-bottom,0px));z-index:10;display:grid;grid-template-columns:32px 1fr;width:236px;background:var(--win);border:2px solid;border-color:#fff #333 #333 #fff;box-shadow:2px 2px 0 #000}
+.menu-side{writing-mode:vertical-rl;transform:rotate(180deg);background:var(--blue);color:#fff;padding:8px 6px;font:700 12px/1 var(--pixel);letter-spacing:.08em;text-shadow:1px 1px #000}
+.menu-list{padding:8px;background:#d0d0d0}
+.menu-list a{display:flex;align-items:center;gap:8px;height:32px;padding:4px 8px;color:#111;font:12px/1 var(--pixel)}
+.menu-list a:hover,.menu-list a:focus-visible{background:var(--blue);color:#fff}
+.menu-sep{margin:5px 2px;border-top:1px solid #808080;border-bottom:1px solid #fff}
+
+@media (max-width:760px){
+  html,body{overflow:auto;height:auto}
+  .desktop{height:auto;min-height:100dvh;overflow:visible;padding:6px 6px calc(44px + env(safe-area-inset-bottom,0px))}
+  .window{height:auto;min-height:calc(100dvh - 54px)}
+  .shell{display:flex;flex-direction:column;flex:1}
+  .pane{order:1;flex:1 0 auto}
+  .sidebar{order:2;overflow:visible}
+  .scroll{overflow:visible;padding:10px}
+  .grid{grid-template-columns:minmax(0,1fr)}
+  .card{grid-template-rows:96px auto}
+  .folder-head h1{font-size:20px}
+  .taskbar{position:fixed}
+  .menu{position:fixed}
+  .task{min-width:0;flex:1 1 auto}
+  .space{display:none}
+}
+@media (prefers-reduced-motion:reduce){.card:hover,.card:focus-visible{transform:none}}
+</style>
+</head>
+<body>
+<div class="desktop">
+  <div class="stars" aria-hidden="true"></div>
+
+  <main class="window" id="win">
+    <header class="titlebar">
+      <div class="titlebar-name"><span class="led" aria-hidden="true"></span><span>AlienOS Folders</span></div>
+      <div class="controls">
+        <button class="win-btn" id="btnMin" type="button" aria-label="최소화">_</button>
+        <button class="win-btn" id="btnMax" type="button" aria-label="창 크기 전환">□</button>
+        <button class="win-btn" id="btnClose" type="button" aria-label="닫기">×</button>
+      </div>
+    </header>
+    <div class="addressbar"><span>Address</span><div class="address">alien://guri-dice/로그 변환기</div></div>
+
+    <div class="shell">
+      <aside class="sidebar">
+        <section class="side-card">
+          <h2>About</h2>
+          <p>코코포리아, Roll20 로그를 블로그에 올리기 좋게 바꿔 줍니다. 로그 파일은 서버로 전송되지 않고 브라우저 안에서 처리됩니다.</p>
+        </section>
+        <section class="side-card">
+          <h2>Programs</h2>
+          <ul class="tree">
+            <li><a href="./CoC.html"><span class="mini-folder" aria-hidden="true"></span>CoC 로그 변환기</a></li>
+            <li><a href="./insane.html"><span class="mini-folder" aria-hidden="true"></span>인세인 로그 변환기</a></li>
+          </ul>
+        </section>
+        <section class="side-card">
+          <h2>Status</h2>
+          <dl>
+            <dt>Signal</dt><dd class="green">stable</dd>
+            <dt>Version</dt><dd>v1.0</dd>
+            <dt>Updated</dt><dd>2026.11.04</dd>
+          </dl>
+        </section>
+      </aside>
+
+      <div class="pane">
+        <div class="location"><span>Location: 로그 변환기</span><b>Ready</b></div>
+        <div class="scroll">
+          <header class="folder-head">
+            <span class="big-folder" aria-hidden="true"></span>
+            <div><h1>로그 변환기</h1><p>사용할 변환기를 고르세요 · 2 item(s)</p></div>
+          </header>
+
+          <div class="grid">
+            <a class="card" href="./CoC.html">
+              <div class="poster" aria-hidden="true"><span class="monitor"></span></div>
+              <div class="info">
+                <h2>CoC 로그 변환기</h2>
+                <p>CoC를 비롯한 일반 TRPG 세션 로그를 변환합니다. 화자별 색과 주사위 결과 표시를 정리할 수 있어요.</p>
+                <div class="foot"><span>코코포리아 / Roll20</span><span class="open">열기</span></div>
+              </div>
+            </a>
+            <a class="card" href="./insane.html">
+              <div class="poster red" aria-hidden="true"><span class="monitor"></span></div>
+              <div class="info">
+                <h2>인세인 로그 변환기</h2>
+                <p>인세인 세션 전용입니다. 인세인 판정 표시와 비밀 접기, 장면 종료 표시를 지원해요.</p>
+                <div class="foot"><span>코코포리아 / Roll20</span><span class="open">열기</span></div>
+              </div>
+            </a>
+          </div>
+
+          <p class="note">작업 내용은 지금 쓰는 브라우저에 자동 저장됩니다. PC 사용을 권장합니다.</p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <nav class="icons" id="icons" aria-label="바탕화면" hidden>
+    <a class="icon" href="./CoC.html"><span class="icon-img" aria-hidden="true"></span>CoC 변환기</a>
+    <a class="icon" href="./insane.html"><span class="icon-img red" aria-hidden="true"></span>인세인 변환기</a>
+  </nav>
+
+  <div class="menu" id="menu" hidden>
+    <div class="menu-side">AlienOS 95</div>
+    <div class="menu-list">
+      <a href="./CoC.html"><span class="mini-folder" aria-hidden="true"></span>CoC 로그 변환기</a>
+      <a href="./insane.html"><span class="mini-folder" aria-hidden="true"></span>인세인 로그 변환기</a>
+      <div class="menu-sep"></div>
+      <a href="https://github.com/guri-dice/log-tools"><span class="mini-folder" aria-hidden="true"></span>GitHub 저장소</a>
+    </div>
+  </div>
+
+  <footer class="taskbar">
+    <button class="start" id="btnStart" type="button" aria-expanded="false" aria-controls="menu"><span class="led" aria-hidden="true"></span>Start</button>
+    <button class="task active" id="btnTask" type="button">AlienOS Folders</button>
+    <div class="space"></div>
+    <div class="tray"><span class="led" aria-hidden="true"></span><span id="clock">00:00</span></div>
+  </footer>
+</div>
+
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var win=$('win'),icons=$('icons'),menu=$('menu'),start=$('btnStart'),task=$('btnTask');
+  function show(open){win.hidden=!open;icons.hidden=open;task.classList.toggle('active',open)}
+  function toggleMenu(open){menu.hidden=!open;start.setAttribute('aria-expanded',String(open))}
+  $('btnMin').addEventListener('click',function(){show(false)});
+  $('btnClose').addEventListener('click',function(){show(false)});
+  $('btnMax').addEventListener('click',function(){win.classList.toggle('maxed')});
+  task.addEventListener('click',function(){show(win.hidden)});
+  start.addEventListener('click',function(e){e.stopPropagation();toggleMenu(menu.hidden)});
+  document.addEventListener('click',function(e){if(!menu.contains(e.target))toggleMenu(false)});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')toggleMenu(false)});
+  function tick(){var d=new Date();$('clock').textContent=String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')}
+  tick();setInterval(tick,10000);
+})();
+</script>
+</body>
+</html>
