@@ -50,21 +50,9 @@ button{font:inherit;cursor:pointer}
 .addressbar{flex:0 0 30px;display:grid;grid-template-columns:auto minmax(0,1fr);gap:7px;align-items:center;padding:4px 7px;border-top:1px solid #fff;border-bottom:2px solid #777;background:#d7d7d7;font:12px/1 var(--pixel)}
 .address{height:20px;display:flex;align-items:center;overflow:hidden;white-space:nowrap;background:#fff;border:2px solid;border-color:#777 #fff #fff #777;padding:1px 8px;color:#111}
 
-.shell{flex:1;min-height:0;display:grid;grid-template-columns:260px minmax(0,1fr);gap:7px;padding:7px}
-.sidebar{min-width:0;min-height:0;overflow:auto;background:#b9b9b9;border:2px solid;border-color:var(--shade) #fff #fff var(--shade);padding:8px}
+.shell{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr);padding:7px}
 .pane{min-width:0;min-height:0;display:flex;flex-direction:column;background:var(--paper);border:2px solid;border-color:var(--shade) #fff #fff var(--shade)}
-.side-card{background:var(--panel);border:2px solid;border-color:#fff var(--shade) var(--shade) #fff;padding:8px 9px;margin-bottom:9px}
-.side-card:last-child{margin-bottom:0}
-.side-card h2{font:700 13px/1.2 var(--pixel);margin:0 0 8px;padding-bottom:4px;border-bottom:1px dotted #777}
-.side-card p{margin:0;font:13px/1.6 var(--body);word-break:keep-all}
-.tree{list-style:none;margin:0;padding:0}
-.tree li{margin:4px 0}
-.tree a{display:inline-flex;align-items:center;gap:6px;min-height:22px;padding:0 3px;color:#111}
-.tree a:hover,.tree a:focus-visible{background:var(--blue);color:#fff}
 .mini-folder{position:relative;display:inline-block;flex:0 0 auto;width:15px;height:12px;background:var(--folder);border:1px solid var(--folder-border);box-shadow:inset 0 3px 0 rgba(255,255,255,.45)}
-dl{display:grid;grid-template-columns:64px 1fr;gap:3px 8px;margin:0}
-dt,dd{margin:0}
-.green{color:#00745f;font-weight:800}
 
 .location{flex:0 0 23px;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:2px 8px;background:#e7e7e7;border-bottom:1px solid #aaa;font:12px/1 var(--pixel);white-space:nowrap;overflow:hidden}
 .location b{color:#00745f}
@@ -114,8 +102,7 @@ dt,dd{margin:0}
   .desktop{height:auto;min-height:100dvh;overflow:visible;padding:6px 6px calc(44px + env(safe-area-inset-bottom,0px))}
   .window{height:auto;min-height:calc(100dvh - 54px)}
   .shell{display:flex;flex-direction:column;flex:1}
-  .pane{order:1;flex:1 0 auto}
-  .sidebar{order:2;overflow:visible}
+  .pane{flex:1 0 auto}
   .scroll{overflow:visible;padding:10px}
   .grid{grid-template-columns:minmax(0,1fr)}
   .card{grid-template-rows:96px auto}
@@ -144,34 +131,13 @@ dt,dd{margin:0}
     <div class="addressbar"><span>Address</span><div class="address">alien://guri-dice/로그 변환기</div></div>
 
     <div class="shell">
-      <aside class="sidebar">
-        <section class="side-card">
-          <h2>About</h2>
-          <p>코코포리아, Roll20 로그를 블로그에 올리기 좋게 바꿔 줍니다. 로그 파일은 서버로 전송되지 않고 브라우저 안에서 처리됩니다.</p>
-        </section>
-        <section class="side-card">
-          <h2>Programs</h2>
-          <ul class="tree">
-            <li><a href="./CoC.html"><span class="mini-folder" aria-hidden="true"></span>CoC 로그 변환기</a></li>
-            <li><a href="./insane.html"><span class="mini-folder" aria-hidden="true"></span>인세인 로그 변환기</a></li>
-          </ul>
-        </section>
-        <section class="side-card">
-          <h2>Status</h2>
-          <dl>
-            <dt>Signal</dt><dd class="green">stable</dd>
-            <dt>Version</dt><dd>v1.0</dd>
-            <dt>Updated</dt><dd>2026.11.04</dd>
-          </dl>
-        </section>
-      </aside>
 
       <div class="pane">
         <div class="location"><span>Location: 로그 변환기</span><b>Ready</b></div>
         <div class="scroll">
           <header class="folder-head">
             <span class="big-folder" aria-hidden="true"></span>
-            <div><h1>로그 변환기</h1><p>사용할 변환기를 고르세요 · 2 item(s)</p></div>
+            <div><h1>로그 변환기</h1><p>사용할 변환기를 선택하십시오 · 2 item(s)</p></div>
           </header>
 
           <div class="grid">
@@ -179,7 +145,7 @@ dt,dd{margin:0}
               <div class="poster" aria-hidden="true"><span class="monitor"></span></div>
               <div class="info">
                 <h2>CoC 로그 변환기</h2>
-                <p>CoC를 비롯한 일반 TRPG 세션 로그를 변환합니다. 화자별 색과 주사위 결과 표시를 정리할 수 있어요.</p>
+                <p>CoC 세션 로그를 변환합니다. 화자별 색과 주사위 결과 표시를 정리할 수 있습니다.</p>
                 <div class="foot"><span>코코포리아 / Roll20</span><span class="open">열기</span></div>
               </div>
             </a>
@@ -187,13 +153,13 @@ dt,dd{margin:0}
               <div class="poster red" aria-hidden="true"><span class="monitor"></span></div>
               <div class="info">
                 <h2>인세인 로그 변환기</h2>
-                <p>인세인 세션 전용입니다. 인세인 판정 표시와 비밀 접기, 장면 종료 표시를 지원해요.</p>
+                <p>인세인 세션 전용입니다. 인세인 판정 표시와 비밀 접기, 장면 종료 표시를 지원합니다.</p>
                 <div class="foot"><span>코코포리아 / Roll20</span><span class="open">열기</span></div>
               </div>
             </a>
           </div>
 
-          <p class="note">작업 내용은 지금 쓰는 브라우저에 자동 저장됩니다. PC 사용을 권장합니다.</p>
+          <p class="note">코코포리아, Roll20 로그를 블로그에 올리기 좋게 변환합니다. 로그 파일은 서버로 전송되지 않고 브라우저 안에서 처리됩니다. 작업 내용은 사용 중인 브라우저에 자동 저장됩니다. PC 사용을 권장합니다.</p>
         </div>
       </div>
     </div>
